@@ -1,15 +1,28 @@
 package main
 
 import (
-	"time"
-	//"github.com/lib/pq"
+	"database/sql"
+	"log"
+	"net/http"
+
+	_ "github.com/lib/pq"
 )
 
 func main() {
+	var err error
+	db, err := sql.Open("postgres", "user=postgres dbname=expense-tracker sslmode=disable")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
 
-	listExpenses([]Expense{
-		{ID: 1, Amount: 50.0, Category: "Food", Note: "Lunch", Date: time.Now().Format(time.RFC3339)},
-		{ID: 2, Amount: 20.0, Category: "Transport", Note: "Bus fare", Date: time.Now().Format(time.RFC3339)},
-		{ID: 3, Amount: 100.0, Category: "Shopping", Note: "Clothes", Date: time.Now().Format(time.RFC3339)},
-	})
+	http.HandleFunc("/expenses", handleExpenses)
+	http.ListenAndServe(":3000", nil)
+
+	expenseDatabase()
+
+}
+
+func handleExpenses(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
 }

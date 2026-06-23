@@ -24,7 +24,7 @@ func addExpense(expenses []Expense, amount float64, category string) []Expense {
 	newExpense := Expense{
 		Amount:   amount,
 		Category: category,
-		Date:     timestamp.Format("2006-01-02 15:04:05"),
+		Date:     timestamp.Format(time.RFC3339),
 		Note:     "",
 		ID:       nextExpenseID(expenses),
 	}
@@ -43,5 +43,5 @@ func printExpenseHeader() {
 }
 
 func printExpenseRow(expense Expense) {
-	fmt.Printf("%-4d %-12s %-16.2f %-16s %-16s\n", expense.ID, expense.Category, expense.Amount, expense.Note, expense.Date)
+	fmt.Printf("%-4d %-12.2f %-16s %-16s %-16s\n", expense.ID, expense.Amount, expense.Note, expense.Category, expense.Date)
 }
