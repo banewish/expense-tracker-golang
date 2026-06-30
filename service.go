@@ -48,6 +48,22 @@ func listExpenses() error {
 	return rows.Err()
 }
 
+func deleteExpense(id int) error {
+	sqlStatement := `DELETE FROM expenses WHERE id = $1`
+	result, err := db.Exec(sqlStatement, id)
+	if err != nil {
+		return fmt.Errorf("error deleting expense: %w", err)
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("error getting rows affected: %w", err)
+	}
+	if rowsAffected == 0 {
+		return fmt.Errorf("no expense found with id %d", id)
+	}
+	return nil
+}
+
 func printExpenseHeader() {
 	fmt.Printf("%-4s %-20s %-12s %-16s %-12s\n", "ID", "TITLE", "AMOUNT", "CATEGORY", "DATE")
 }
